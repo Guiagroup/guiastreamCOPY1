@@ -134,7 +134,7 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
       />
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? t("upload.uploading") : t("upload.submit")}
+        {isSubmitting ? t("upload.uploading") : t("upload.add")}
       </Button>
     </form>
   );

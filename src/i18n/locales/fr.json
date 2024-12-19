@@ -3,7 +3,12 @@
     "search": "Rechercher des vidéos...",
     "signIn": "Se connecter",
     "signUp": "S'inscrire",
-    "addVideo": "Ajouter une vidéo"
+    "addVideo": "Ajouter une vidéo",
+    "home": "Accueil",
+    "upload": "Télécharger",
+    "dashboard": "Tableau de bord",
+    "logout": "Déconnexion",
+    "pricing": "Tarification"
   },
   "upload": {
     "title": "Télécharger une vidéo",
@@ -14,13 +19,15 @@
     "newCategory": "Nouvelle catégorie",
     "cancel": "Annuler",
     "submit": "Télécharger la vidéo",
+    "add": "Ajouter",
     "enterTitle": "Entrez le titre de la vidéo",
     "enterDescription": "Entrez la description de la vidéo",
     "enterUrl": "Entrez l'URL YouTube",
     "enterCategory": "Entrez le nom de la nouvelle catégorie",
     "selectCategory": "Sélectionnez une catégorie",
     "requiredFields": "Le titre, l'URL de la vidéo et la catégorie sont obligatoires",
-    "successMessage": "Vidéo téléchargée avec succès !"
+    "successMessage": "Vidéo téléchargée avec succès !",
+    "uploading": "Téléchargement..."
   },
   "comments": {
     "title": "Commentaires",
@@ -39,6 +46,7 @@
     "playNow": "Lire maintenant",
     "edit": "Modifier",
     "delete": "Supprimer",
+    "back": "Retour",
     "deleteConfirm": "Êtes-vous sûr ?",
     "deleteWarning": "Cette action ne peut pas être annulée. La vidéo sera définitivement supprimée.",
     "editVideo": "Modifier les détails de la vidéo",
@@ -57,5 +65,20 @@
     "success": "Succès",
     "favorite": "Ajouter aux favoris",
     "unfavorite": "Retirer des favoris"
+  },
+  "pricing": {
+    "title": "Choisissez votre forfait",
+    "description": "Sélectionnez le forfait parfait pour vos besoins",
+    "freePlan": "Gratuit",
+    "basicPlan": "Basique",
+    "premiumPlan": "Premium",
+    "selectPlan": "Commencer",
+    "startTrial": "Commencer l'essai gratuit",
+    "planUpdated": "Forfait mis à jour avec succès",
+    "freePlanActivated": "Forfait gratuit activé",
+    "trialStarted": "Essai démarré avec succès",
+    "trialDescription": "Votre essai de 30 jours a commencé",
+    "errorSelectingPlan": "Erreur lors de la sélection du forfait",
+    "disclaimer": "* Les prix peuvent être modifiés. Essai gratuit disponible pour les forfaits payants."
   }
 }

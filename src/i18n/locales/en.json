@@ -4,6 +4,10 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "addVideo": "Add Video",
+    "home": "Home",
+    "upload": "Upload",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
     "pricing": "Pricing"
   },
   "upload": {
@@ -15,13 +19,15 @@
     "newCategory": "New Category",
     "cancel": "Cancel",
     "submit": "Upload Video",
+    "add": "Add",
     "enterTitle": "Enter video title",
     "enterDescription": "Enter video description",
     "enterUrl": "Enter YouTube video URL",
     "enterCategory": "Enter new category name",
     "selectCategory": "Select a category",
     "requiredFields": "Title, Video URL, and Category are required fields",
-    "successMessage": "Video uploaded successfully!"
+    "successMessage": "Video uploaded successfully!",
+    "uploading": "Uploading..."
   },
   "comments": {
     "title": "Comments",
@@ -40,6 +46,7 @@
     "playNow": "Play Now",
     "edit": "Edit",
     "delete": "Delete",
+    "back": "Back",
     "deleteConfirm": "Are you sure?",
     "deleteWarning": "This action cannot be undone. This will permanently delete the video.",
     "editVideo": "Edit Video Details",
@@ -67,25 +74,11 @@
     "premiumPlan": "Premium",
     "selectPlan": "Get Started",
     "startTrial": "Start Free Trial",
-    "comingSoon": "Coming Soon",
-    "selectPlanMessage": "The {plan} plan will be available soon!",
-    "disclaimer": "* Prices may be subject to change. Free trial available for paid plans.",
-    "free": {
-      "videos": "Up to 10 videos",
-      "categorization": "Basic categorization",
-      "editing": "Limited editing features"
-    },
-    "basic": {
-      "videos": "Up to 100 videos",
-      "categorization": "Advanced categorization",
-      "editing": "Full editing features",
-      "support": "Email support"
-    },
-    "premium": {
-      "videos": "Unlimited videos",
-      "categorization": "Personalized categorization",
-      "customization": "Interface customization",
-      "support": "Priority support"
-    }
+    "planUpdated": "Plan updated successfully",
+    "freePlanActivated": "Free plan activated",
+    "trialStarted": "Trial started successfully",
+    "trialDescription": "Your 30-day trial has begun",
+    "errorSelectingPlan": "Error selecting plan",
+    "disclaimer": "* Prices may be subject to change. Free trial available for paid plans."
   }
 }

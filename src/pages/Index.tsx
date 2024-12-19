@@ -53,26 +53,21 @@ const Index = () => {
   }, [t]);
 
   const displayVideos = videos.filter(video => {
-    if (latestVideo && video.id === latestVideo.id) return false;
+    if (latestVideo && video.id === latestVideo.id && !isNewUser) return false;
     const matchesCategory = selectedCategory === "all" || video.category === selectedCategory;
     const matchesFavorites = !showFavorites || video.is_favorite;
     return matchesCategory && matchesFavorites;
   });
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  // If there's only one video, duplicate it for both hero and grid
+  const shouldDuplicateVideo = videos.length === 1;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar onShowFavorites={setShowFavorites} />
       <main className="flex-grow pt-16">
         <HeroSection 
-          video={latestVideo}
+          video={videos[0] || null}
           isNewUser={isNewUser}
           showFavorites={showFavorites}
           fromSuggestion={fromSuggestion}
@@ -87,13 +82,17 @@ const Index = () => {
                 categories={categories}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
+                videos={videos}
               />
             </>
           )}
           {isNewUser ? (
             <EmptyState />
           ) : (
-            <VideoGrid videos={displayVideos} highlightedVideoId={highlightedVideoId} />
+            <VideoGrid 
+              videos={shouldDuplicateVideo ? videos : displayVideos} 
+              highlightedVideoId={highlightedVideoId} 
+            />
           )}
         </div>
       </main>

@@ -3,7 +3,12 @@
     "search": "Videos suchen...",
     "signIn": "Anmelden",
     "signUp": "Registrieren",
-    "addVideo": "Video hinzufügen"
+    "addVideo": "Video hinzufügen",
+    "home": "Startseite",
+    "upload": "Hochladen",
+    "dashboard": "Dashboard",
+    "logout": "Abmelden",
+    "pricing": "Preise"
   },
   "upload": {
     "title": "Video hochladen",
@@ -14,13 +19,15 @@
     "newCategory": "Neue Kategorie",
     "cancel": "Abbrechen",
     "submit": "Video hochladen",
+    "add": "Hinzufügen",
     "enterTitle": "Videotitel eingeben",
     "enterDescription": "Videobeschreibung eingeben",
     "enterUrl": "YouTube-URL eingeben",
     "enterCategory": "Namen der neuen Kategorie eingeben",
     "selectCategory": "Kategorie auswählen",
     "requiredFields": "Titel, Video-URL und Kategorie sind Pflichtfelder",
-    "successMessage": "Video erfolgreich hochgeladen!"
+    "successMessage": "Video erfolgreich hochgeladen!",
+    "uploading": "Wird hochgeladen..."
   },
   "comments": {
     "title": "Kommentare",
@@ -39,6 +46,7 @@
     "playNow": "Jetzt abspielen",
     "edit": "Bearbeiten",
     "delete": "Löschen",
+    "back": "Zurück",
     "deleteConfirm": "Sind Sie sicher?",
     "deleteWarning": "Diese Aktion kann nicht rückgängig gemacht werden. Das Video wird dauerhaft gelöscht.",
     "editVideo": "Videodetails bearbeiten",
@@ -57,5 +65,20 @@
     "success": "Erfolgreich",
     "favorite": "Zu Favoriten hinzufügen",
     "unfavorite": "Aus Favoriten entfernen"
+  },
+  "pricing": {
+    "title": "Wählen Sie Ihren Plan",
+    "description": "Wählen Sie den perfekten Plan für Ihre Streaming-Bedürfnisse",
+    "freePlan": "Kostenlos",
+    "basicPlan": "Basis",
+    "premiumPlan": "Premium",
+    "selectPlan": "Loslegen",
+    "startTrial": "Kostenlose Testversion starten",
+    "planUpdated": "Plan erfolgreich aktualisiert",
+    "freePlanActivated": "Kostenloser Plan aktiviert",
+    "trialStarted": "Testversion erfolgreich gestartet",
+    "trialDescription": "Ihre 30-tägige Testversion hat begonnen",
+    "errorSelectingPlan": "Fehler bei der Planauswahl",
+    "disclaimer": "* Preise können sich ändern. Kostenlose Testversion für bezahlte Pläne verfügbar."
   }
 }
