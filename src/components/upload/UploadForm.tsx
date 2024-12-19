@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { CategorySelector } from "./CategorySelector";
 import { FormField } from "./FormField";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UploadFormProps {
   onUploadSuccess?: () => void;
@@ -23,6 +24,31 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
   const [category, setCategory] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Load form data from localStorage if available
+  useEffect(() => {
+    const savedForm = localStorage.getItem('uploadForm');
+    if (savedForm) {
+      const parsedForm = JSON.parse(savedForm);
+      setTitle(parsedForm.title || "");
+      setDescription(parsedForm.description || "");
+      setVideoUrl(parsedForm.videoUrl || "");
+      setCategory(parsedForm.category || "");
+      setNewCategory(parsedForm.newCategory || "");
+    }
+  }, []);
+
+  // Save form data to localStorage when it changes
+  useEffect(() => {
+    const formData = {
+      title,
+      description,
+      videoUrl,
+      category,
+      newCategory,
+    };
+    localStorage.setItem('uploadForm', JSON.stringify(formData));
+  }, [title, description, videoUrl, category, newCategory]);
 
   const validateYouTubeUrl = (url: string) => {
     const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
@@ -54,6 +80,38 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
       return;
     }
 
+    // Check user's plan and video count
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan_type, uploads_used, monthly_upload_limit')
+      .single();
+
+    if (!profile) {
+      toast.error("Unable to verify user plan");
+      return;
+    }
+
+    if (profile.uploads_used >= profile.monthly_upload_limit) {
+      if (profile.plan_type === 'free') {
+        toast.error("Free plan limit reached", {
+          description: "Please upgrade to add more videos",
+          action: {
+            label: "Upgrade",
+            onClick: () => navigate('/pricing')
+          }
+        });
+      } else if (profile.plan_type === 'basic') {
+        toast.error("Basic plan limit reached", {
+          description: "Please upgrade to premium for unlimited videos",
+          action: {
+            label: "Upgrade",
+            onClick: () => navigate('/pricing')
+          }
+        });
+      }
+      return;
+    }
+
     setIsSubmitting(true);
 
     const finalCategory = newCategory || category;
@@ -67,13 +125,14 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
       category: finalCategory,
       is_favorite: false,
       upload_date: new Date().toISOString(),
-      last_played_position: 0 // Added this field with initial value of 0
+      last_played_position: 0
     };
 
     try {
       const success = await addVideo(newVideo);
       if (success) {
         toast.success(t("upload.successMessage"));
+        localStorage.removeItem('uploadForm'); // Clear form data after successful upload
         onUploadSuccess?.();
         navigate('/home');
       } else {
@@ -134,7 +193,7 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
       />
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? t("upload.uploading") : t("upload.add")}
+        {isSubmitting ? t("upload.uploading") : "Add"}
       </Button>
     </form>
   );

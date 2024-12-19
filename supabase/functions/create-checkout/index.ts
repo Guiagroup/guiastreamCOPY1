@@ -69,15 +69,6 @@ serve(async (req) => {
       },
     });
 
-    // Update user's profile with pending subscription status
-    await supabaseClient
-      .from('profiles')
-      .update({ 
-        plan_type: planType,
-        subscription_status: 'pending',
-      })
-      .eq('id', user.id);
-
     return new Response(
       JSON.stringify({ url: session.url }),
       { 

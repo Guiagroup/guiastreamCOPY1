@@ -3,10 +3,11 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Video } from "../../types/video";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { CategorySelector } from "../upload/CategorySelector";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VideoEditDialogProps {
   video: Video;
@@ -28,9 +29,45 @@ export const VideoEditDialog = ({
   const [editedCategory, setEditedCategory] = useState(video.category);
   const [newCategory, setNewCategory] = useState("");
 
-  const handleSave = () => {
+  // Load form data from localStorage if available
+  useEffect(() => {
+    const savedForm = localStorage.getItem('videoEditForm');
+    if (savedForm) {
+      const parsedForm = JSON.parse(savedForm);
+      setEditedTitle(parsedForm.title);
+      setEditedDescription(parsedForm.description);
+      setEditedVideoUrl(parsedForm.videoUrl);
+      setEditedCategory(parsedForm.category);
+      setNewCategory(parsedForm.newCategory);
+    }
+  }, []);
+
+  // Save form data to localStorage when it changes
+  useEffect(() => {
+    const formData = {
+      title: editedTitle,
+      description: editedDescription,
+      videoUrl: editedVideoUrl,
+      category: editedCategory,
+      newCategory: newCategory,
+    };
+    localStorage.setItem('videoEditForm', JSON.stringify(formData));
+  }, [editedTitle, editedDescription, editedVideoUrl, editedCategory, newCategory]);
+
+  const handleSave = async () => {
     if (!editedTitle.trim() || !editedDescription.trim() || !editedVideoUrl.trim()) {
       toast.error(t('common.error'));
+      return;
+    }
+
+    // Check user's plan and video count
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan_type, uploads_used')
+      .single();
+
+    if (!profile) {
+      toast.error("Unable to verify user plan");
       return;
     }
 
@@ -47,6 +84,7 @@ export const VideoEditDialog = ({
     
     onUpdate(updatedVideo);
     onOpenChange(false);
+    localStorage.removeItem('videoEditForm'); // Clear form data after successful save
     toast.success(t('common.success'));
   };
 

@@ -104,7 +104,7 @@ const PricingDialog = () => {
                 <div className="flex items-center justify-between pb-6 mb-6 border-b">
                   <div>
                     <p className="text-sm font-bold tracking-wider uppercase">{t('pricing.basicPlan')}</p>
-                    <p className="text-4xl font-bold">€5<span className="text-sm font-normal">/mo</span></p>
+                    <p className="text-4xl font-bold">€7.99<span className="text-sm font-normal">/mo</span></p>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -135,7 +135,7 @@ const PricingDialog = () => {
                 <div className="flex items-center justify-between pb-6 mb-6 border-b">
                   <div>
                     <p className="text-sm font-bold tracking-wider uppercase">{t('pricing.premiumPlan')}</p>
-                    <p className="text-4xl font-bold">€7<span className="text-sm font-normal">/mo</span></p>
+                    <p className="text-4xl font-bold">€9.99<span className="text-sm font-normal">/mo</span></p>
                   </div>
                 </div>
                 <div className="space-y-4">
