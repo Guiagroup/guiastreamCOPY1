@@ -5,7 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
 import { useState, useEffect } from "react";
-import { SessionContextProvider, Session } from '@supabase/auth-helpers-react';
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import VideoPlayer from "./pages/VideoPlayer";
@@ -19,16 +19,19 @@ import "./i18n/config";
 import { CookieConsent } from "./components/privacy/CookieConsent";
 import { toast } from "sonner";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const AppRoutes = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    localStorage.setItem('lastPath', location.pathname);
-  }, [location]);
 
   useEffect(() => {
     const lastPath = localStorage.getItem('lastPath');
@@ -45,11 +48,19 @@ const AppRoutes = () => {
 
   // Handle auth state changes
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
+        queryClient.clear(); // Clear query cache on logout
+        localStorage.removeItem('lastPath');
         navigate('/auth');
-      } else if (event === 'SIGNED_IN') {
+      } else if (event === 'SIGNED_IN' && session) {
         navigate('/home');
+      } else if (event === 'TOKEN_REFRESHED') {
+        // Handle successful token refresh
+        console.log('Token refreshed successfully');
+      } else if (event === 'USER_UPDATED') {
+        // Handle user data updates
+        console.log('User data updated');
       }
     });
 
@@ -76,30 +87,45 @@ const AppRoutes = () => {
 };
 
 const App = () => {
-  const [initialSession, setInitialSession] = useState<Session | null>(null);
+  const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    // Initialize session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setInitialSession(session);
-    });
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        
+        // Initialize Supabase auth
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (session?.access_token) {
+            // Ensure the token is set in the client
+            supabase.auth.setSession(session);
+          }
+        });
 
-    // Handle auth errors
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setInitialSession(session);
-    });
-
-    return () => {
-      subscription.unsubscribe();
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (error: any) {
+        console.error('Error initializing auth:', error);
+        toast.error('Authentication Error', {
+          description: 'Please try signing in again'
+        });
+      } finally {
+        setInitializing(false);
+      }
     };
+
+    initializeAuth();
   }, []);
+
+  if (initializing) {
+    return <PageLoader />;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionContextProvider 
-        supabaseClient={supabase}
-        initialSession={initialSession}
-      >
+      <SessionContextProvider supabaseClient={supabase}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TooltipProvider>
             <Toaster />
