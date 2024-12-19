@@ -25,7 +25,6 @@ export const Navbar = ({ onSearch, onShowFavorites, onSuggestionClick }: NavbarP
           {session ? (
             <>
               <div className="hidden md:flex items-center gap-2">
-                <ThemeToggle />
                 <LanguageSelector />
                 <UserNav />
               </div>

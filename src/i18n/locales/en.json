@@ -46,13 +46,11 @@
     "playNow": "Play Now",
     "edit": "Edit",
     "delete": "Delete",
-    "back": "Back to Home",
+    "back": "Back",
     "deleteConfirm": "Are you sure?",
     "deleteWarning": "This action cannot be undone. This will permanently delete the video.",
     "editVideo": "Edit Video Details",
-    "saveChanges": "Save Changes",
-    "recommendations": "Recommended Videos",
-    "noRecommendations": "No recommended videos found"
+    "saveChanges": "Save Changes"
   },
   "categories": {
     "allCategories": "All Categories",

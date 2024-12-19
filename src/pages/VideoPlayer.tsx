@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getVideoById, updateVideo, getRecommendedVideos } from "../services/videoService";
+import { getVideoById, updateVideo } from "../services/videoService";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Video } from "@/types/video";
@@ -11,14 +11,13 @@ import { VideoEditDialog } from "../components/video/VideoEditDialog";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { RegularVideoCard } from "@/components/video/RegularVideoCard";
+import { supabase } from "@/integrations/supabase/client";
 
 const VideoPlayer = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [video, setVideo] = useState<Video | null>(null);
-  const [recommendedVideos, setRecommendedVideos] = useState<Video[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
   const playerRef = useRef<HTMLIFrameElement>(null);
@@ -31,10 +30,6 @@ const VideoPlayer = () => {
         setVideo(videoData);
         const savedComments = getComments(id);
         setComments(savedComments);
-        
-        // Fetch recommended videos
-        const recommendations = await getRecommendedVideos(id);
-        setRecommendedVideos(recommendations.filter(v => v.id !== id));
       }
     };
     loadVideo();
@@ -92,7 +87,7 @@ const VideoPlayer = () => {
   };
 
   if (!video) {
-    return <div>{t('common.loading')}</div>;
+    return <div>{t('common.error')}</div>;
   }
 
   const videoId = video.video_url.split("v=")[1]?.split("&")[0];
@@ -154,7 +149,7 @@ const VideoPlayer = () => {
           className="mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('player.back')}
+          {t('common.back')}
         </Button>
 
         <div className="aspect-video w-full max-w-5xl mx-auto mb-8 rounded-lg overflow-hidden shadow-2xl">
@@ -175,21 +170,6 @@ const VideoPlayer = () => {
             onEdit={() => setIsEditing(true)}
           />
           <p className="text-lg text-muted-foreground mb-8">{video.description}</p>
-
-          {recommendedVideos.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">{t('player.recommendations')}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {recommendedVideos.map((video) => (
-                  <RegularVideoCard
-                    key={video.id}
-                    video={video}
-                    onNavigate={() => navigate(`/video/${video.id}`)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
 
           <VideoPlayerComments
             comments={comments}

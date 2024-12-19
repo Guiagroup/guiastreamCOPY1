@@ -46,13 +46,11 @@
     "playNow": "Lire maintenant",
     "edit": "Modifier",
     "delete": "Supprimer",
-    "back": "Retour à l'accueil",
+    "back": "Retour",
     "deleteConfirm": "Êtes-vous sûr ?",
     "deleteWarning": "Cette action ne peut pas être annulée. La vidéo sera définitivement supprimée.",
     "editVideo": "Modifier les détails de la vidéo",
-    "saveChanges": "Enregistrer les modifications",
-    "recommendations": "Vidéos recommandées",
-    "noRecommendations": "Aucune vidéo recommandée trouvée"
+    "saveChanges": "Enregistrer les modifications"
   },
   "categories": {
     "allCategories": "Toutes les catégories",
