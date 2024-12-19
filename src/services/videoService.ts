@@ -2,6 +2,29 @@ import { Video } from "../types/video";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+export const getRecommendedVideos = async (videoId: string): Promise<Video[]> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  // Set the current video ID in the session
+  await supabase.rpc('set_config', {
+    key: 'app.current_video_id',
+    value: videoId
+  });
+
+  const { data, error } = await supabase
+    .from('videos')
+    .select('*')
+    .limit(6);
+
+  if (error) {
+    console.error('Error fetching recommended videos:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
 export const getVideos = async (): Promise<Video[]> => {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];

@@ -46,11 +46,13 @@
     "playNow": "Jetzt abspielen",
     "edit": "Bearbeiten",
     "delete": "Löschen",
-    "back": "Zurück",
+    "back": "Zurück zur Startseite",
     "deleteConfirm": "Sind Sie sicher?",
     "deleteWarning": "Diese Aktion kann nicht rückgängig gemacht werden. Das Video wird dauerhaft gelöscht.",
     "editVideo": "Videodetails bearbeiten",
-    "saveChanges": "Änderungen speichern"
+    "saveChanges": "Änderungen speichern",
+    "recommendations": "Empfohlene Videos",
+    "noRecommendations": "Keine empfohlenen Videos gefunden"
   },
   "categories": {
     "allCategories": "Alle Kategorien",

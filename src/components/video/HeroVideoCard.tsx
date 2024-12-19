@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Video } from "../../types/video";
 import { Button } from "../ui/button";
-import { Edit, Heart, Trash2 } from "lucide-react";
+import { Edit, Heart } from "lucide-react";
 import { VideoEditDialog } from "./VideoEditDialog";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -9,27 +9,16 @@ import { toast } from "sonner";
 interface HeroVideoCardProps {
   video: Video;
   onUpdate?: (video: Video) => void;
-  onDelete?: (videoId: string) => void;
   onNavigate?: () => void;
 }
 
-export const HeroVideoCard = ({ video, onUpdate, onDelete, onNavigate }: HeroVideoCardProps) => {
+export const HeroVideoCard = ({ video, onUpdate, onNavigate }: HeroVideoCardProps) => {
   const { t } = useTranslation();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsEditDialogOpen(true);
-  };
-
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!onDelete) return;
-    
-    if (window.confirm(t('player.deleteWarning'))) {
-      onDelete(video.id);
-      toast.success(t('common.success'));
-    }
   };
 
   const handleVideoUpdate = (updatedVideo: Video) => {
@@ -63,16 +52,6 @@ export const HeroVideoCard = ({ video, onUpdate, onDelete, onNavigate }: HeroVid
             >
               <Edit className="h-4 w-4 mr-2" />
               {t('player.edit')}
-            </Button>
-            
-            <Button
-              size="sm"
-              variant="destructive"
-              className="bg-white/10 hover:bg-white/20"
-              onClick={handleDelete}
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              {t('player.delete')}
             </Button>
             
             <Button
