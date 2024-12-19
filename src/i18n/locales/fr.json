@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "search": "Rechercher des vidéos...",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "addVideo": "Ajouter une vidéo"
+  },
+  "upload": {
+    "title": "Télécharger une vidéo",
+    "videoTitle": "Titre de la vidéo",
+    "description": "Description",
+    "videoUrl": "URL de la vidéo",
+    "category": "Catégorie",
+    "newCategory": "Nouvelle catégorie",
+    "cancel": "Annuler",
+    "submit": "Télécharger la vidéo",
+    "enterTitle": "Entrez le titre de la vidéo",
+    "enterDescription": "Entrez la description de la vidéo",
+    "enterUrl": "Entrez l'URL YouTube",
+    "enterCategory": "Entrez le nom de la nouvelle catégorie",
+    "selectCategory": "Sélectionnez une catégorie",
+    "requiredFields": "Le titre, l'URL de la vidéo et la catégorie sont obligatoires",
+    "successMessage": "Vidéo téléchargée avec succès !"
+  },
+  "comments": {
+    "title": "Commentaires",
+    "addComment": "Ajouter un commentaire...",
+    "submit": "Commenter"
+  },
+  "footer": {
+    "quickLinks": "Liens rapides",
+    "aboutUs": "À propos",
+    "privacyPolicy": "Politique de confidentialité",
+    "followUs": "Suivez-nous",
+    "slogan": "Votre carnet de streaming personnel",
+    "copyright": "© 2024 GuiaStream. Tous droits réservés."
+  },
+  "player": {
+    "playNow": "Lire maintenant",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleteConfirm": "Êtes-vous sûr ?",
+    "deleteWarning": "Cette action ne peut pas être annulée. La vidéo sera définitivement supprimée.",
+    "editVideo": "Modifier les détails de la vidéo",
+    "saveChanges": "Enregistrer les modifications"
+  },
+  "categories": {
+    "allCategories": "Toutes les catégories",
+    "tutorial": "Tutoriel",
+    "course": "Cours",
+    "review": "Critique"
+  },
+  "common": {
+    "noResults": "Aucun résultat trouvé.",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "success": "Succès",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "nav": {
+    "search": "Search videos...",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "addVideo": "Add Video",
+    "pricing": "Pricing"
+  },
+  "upload": {
+    "title": "Upload Video",
+    "videoTitle": "Video Title",
+    "description": "Description",
+    "videoUrl": "Video URL",
+    "category": "Category",
+    "newCategory": "New Category",
+    "cancel": "Cancel",
+    "submit": "Upload Video",
+    "enterTitle": "Enter video title",
+    "enterDescription": "Enter video description",
+    "enterUrl": "Enter YouTube video URL",
+    "enterCategory": "Enter new category name",
+    "selectCategory": "Select a category",
+    "requiredFields": "Title, Video URL, and Category are required fields",
+    "successMessage": "Video uploaded successfully!"
+  },
+  "comments": {
+    "title": "Comments",
+    "addComment": "Add a comment...",
+    "submit": "Comment"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "privacyPolicy": "Privacy Policy",
+    "followUs": "Follow Us",
+    "slogan": "Your Personal Streaming Notebook",
+    "copyright": "© 2024 GuiaStream. All rights reserved."
+  },
+  "player": {
+    "playNow": "Play Now",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure?",
+    "deleteWarning": "This action cannot be undone. This will permanently delete the video.",
+    "editVideo": "Edit Video Details",
+    "saveChanges": "Save Changes"
+  },
+  "categories": {
+    "allCategories": "All Categories",
+    "tutorial": "Tutorial",
+    "course": "Course",
+    "review": "Review"
+  },
+  "common": {
+    "noResults": "No results found.",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites"
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "description": "Select the perfect plan for your streaming needs",
+    "freePlan": "Free",
+    "basicPlan": "Basic",
+    "premiumPlan": "Premium",
+    "selectPlan": "Get Started",
+    "startTrial": "Start Free Trial",
+    "comingSoon": "Coming Soon",
+    "selectPlanMessage": "The {plan} plan will be available soon!",
+    "disclaimer": "* Prices may be subject to change. Free trial available for paid plans.",
+    "free": {
+      "videos": "Up to 10 videos",
+      "categorization": "Basic categorization",
+      "editing": "Limited editing features"
+    },
+    "basic": {
+      "videos": "Up to 100 videos",
+      "categorization": "Advanced categorization",
+      "editing": "Full editing features",
+      "support": "Email support"
+    },
+    "premium": {
+      "videos": "Unlimited videos",
+      "categorization": "Personalized categorization",
+      "customization": "Interface customization",
+      "support": "Priority support"
+    }
+  }
+}

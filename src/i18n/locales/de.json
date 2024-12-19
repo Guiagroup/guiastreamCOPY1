@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "search": "Videos suchen...",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "addVideo": "Video hinzufügen"
+  },
+  "upload": {
+    "title": "Video hochladen",
+    "videoTitle": "Videotitel",
+    "description": "Beschreibung",
+    "videoUrl": "Video-URL",
+    "category": "Kategorie",
+    "newCategory": "Neue Kategorie",
+    "cancel": "Abbrechen",
+    "submit": "Video hochladen",
+    "enterTitle": "Videotitel eingeben",
+    "enterDescription": "Videobeschreibung eingeben",
+    "enterUrl": "YouTube-URL eingeben",
+    "enterCategory": "Namen der neuen Kategorie eingeben",
+    "selectCategory": "Kategorie auswählen",
+    "requiredFields": "Titel, Video-URL und Kategorie sind Pflichtfelder",
+    "successMessage": "Video erfolgreich hochgeladen!"
+  },
+  "comments": {
+    "title": "Kommentare",
+    "addComment": "Kommentar hinzufügen...",
+    "submit": "Kommentieren"
+  },
+  "footer": {
+    "quickLinks": "Schnelllinks",
+    "aboutUs": "Über uns",
+    "privacyPolicy": "Datenschutz",
+    "followUs": "Folgen Sie uns",
+    "slogan": "Ihr persönliches Streaming-Notizbuch",
+    "copyright": "© 2024 GuiaStream. Alle Rechte vorbehalten."
+  },
+  "player": {
+    "playNow": "Jetzt abspielen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "deleteConfirm": "Sind Sie sicher?",
+    "deleteWarning": "Diese Aktion kann nicht rückgängig gemacht werden. Das Video wird dauerhaft gelöscht.",
+    "editVideo": "Videodetails bearbeiten",
+    "saveChanges": "Änderungen speichern"
+  },
+  "categories": {
+    "allCategories": "Alle Kategorien",
+    "tutorial": "Tutorial",
+    "course": "Kurs",
+    "review": "Rezension"
+  },
+  "common": {
+    "noResults": "Keine Ergebnisse gefunden.",
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolgreich",
+    "favorite": "Zu Favoriten hinzufügen",
+    "unfavorite": "Aus Favoriten entfernen"
+  }
+}
