@@ -149,7 +149,7 @@ const VideoPlayer = () => {
           className="mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('common.back')}
+          Back
         </Button>
 
         <div className="aspect-video w-full max-w-5xl mx-auto mb-8 rounded-lg overflow-hidden shadow-2xl">
