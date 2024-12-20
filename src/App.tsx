@@ -82,7 +82,7 @@ const AppRoutes = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         await clearSessionAndRedirect();
       } else if (event === 'SIGNED_IN' && session) {
         try {
