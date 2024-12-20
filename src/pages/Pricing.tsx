@@ -15,40 +15,29 @@ const Pricing = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        // If user is not logged in, redirect to auth page with plan info
         navigate('/auth', { state: { plan } });
         return;
       }
 
-      console.log('Updating plan to:', plan); // Debug log
-
-      const { error, data } = await supabase
-        .from('profiles')
-        .update({ 
-          plan_type: plan,
-        })
-        .eq('id', user.id)
-        .select();
-
-      if (error) {
-        console.error('Error updating plan:', error); // Debug log
-        throw error;
-      }
-
-      console.log('Updated profile:', data); // Debug log
-
-      if (plan === 'free') {
-        toast.success(t('pricing.planUpdated'), {
-          description: t('pricing.freePlanActivated')
+      // For all plans, redirect to checkout
+      try {
+        const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-checkout', {
+          body: { planType: plan }
         });
-      } else {
-        toast.success(t('pricing.trialStarted'), {
-          description: t('pricing.trialDescription')
+
+        if (checkoutError) throw checkoutError;
+        if (checkoutData?.url) {
+          // Store the current page state in localStorage before redirecting
+          localStorage.setItem('lastVisitedPage', 'pricing');
+          window.location.href = checkoutData.url;
+          return;
+        }
+      } catch (error: any) {
+        console.error('Error creating checkout:', error);
+        toast.error('Checkout error', {
+          description: 'Failed to create checkout session. Please try again.'
         });
       }
-
-      // Redirect to dashboard with plan info
-      navigate('/dashboard', { state: { plan } });
     } catch (error) {
       console.error('Error selecting plan:', error);
       toast.error(t('common.error'), {
@@ -82,9 +71,9 @@ const Pricing = () => {
               </div>
               <div className="space-y-4">
                 {[
-                  t('pricing.free.videos'),
-                  t('pricing.free.categorization'),
-                  t('pricing.free.editing')
+                  "10 video uploads per month",
+                  "Basic video categorization",
+                  "Standard support"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center">
                     <Check className="w-4 h-4 mr-3 text-green-500" />
@@ -111,15 +100,15 @@ const Pricing = () => {
               <div className="flex items-center justify-between pb-6 mb-6 border-b">
                 <div>
                   <p className="text-sm font-bold tracking-wider uppercase text-foreground">Basic</p>
-                  <p className="text-5xl font-bold text-foreground">€5<span className="text-sm font-normal">/mo</span></p>
+                  <p className="text-5xl font-bold text-foreground">€7.99<span className="text-sm font-normal">/mo</span></p>
                 </div>
               </div>
               <div className="space-y-4">
                 {[
-                  t('pricing.basic.videos'),
-                  t('pricing.basic.categorization'),
-                  t('pricing.basic.editing'),
-                  t('pricing.basic.support')
+                  "100 video uploads per month",
+                  "Advanced categorization",
+                  "Priority support",
+                  "Custom video thumbnails"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center">
                     <Check className="w-4 h-4 mr-3 text-green-500" />
@@ -142,15 +131,16 @@ const Pricing = () => {
               <div className="flex items-center justify-between pb-6 mb-6 border-b">
                 <div>
                   <p className="text-sm font-bold tracking-wider uppercase text-foreground">Premium</p>
-                  <p className="text-5xl font-bold text-foreground">€7<span className="text-sm font-normal">/mo</span></p>
+                  <p className="text-5xl font-bold text-foreground">€9.99<span className="text-sm font-normal">/mo</span></p>
                 </div>
               </div>
               <div className="space-y-4">
                 {[
-                  t('pricing.premium.videos'),
-                  t('pricing.premium.categorization'),
-                  t('pricing.premium.customization'),
-                  t('pricing.premium.support')
+                  "Unlimited video uploads",
+                  "AI-powered categorization",
+                  "24/7 Premium support",
+                  "Advanced analytics",
+                  "Custom branding options"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center">
                     <Check className="w-4 h-4 mr-3 text-green-500" />

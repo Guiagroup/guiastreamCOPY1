@@ -79,6 +79,26 @@
     "trialStarted": "Trial started successfully",
     "trialDescription": "Your 30-day trial has begun",
     "errorSelectingPlan": "Error selecting plan",
-    "disclaimer": "* Prices may be subject to change. Free trial available for paid plans."
+    "disclaimer": "* All paid plans include a 30-day free trial. Credit card required for trial. You will be charged after the trial period ends.",
+    "features": {
+      "free": {
+        "videos": "10 video uploads per month",
+        "categorization": "Basic video categorization",
+        "support": "Standard support"
+      },
+      "basic": {
+        "videos": "100 video uploads per month",
+        "categorization": "Advanced categorization",
+        "support": "Priority support",
+        "thumbnails": "Custom video thumbnails"
+      },
+      "premium": {
+        "videos": "Unlimited video uploads",
+        "categorization": "AI-powered categorization",
+        "support": "24/7 Premium support",
+        "analytics": "Advanced analytics",
+        "branding": "Custom branding options"
+      }
+    }
   }
 }
