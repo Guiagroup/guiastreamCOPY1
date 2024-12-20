@@ -4,7 +4,6 @@ import { Button } from "../ui/button";
 import { Edit, Heart } from "lucide-react";
 import { VideoEditDialog } from "./VideoEditDialog";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 
 interface HeroVideoCardProps {
   video: Video;
@@ -19,12 +18,6 @@ export const HeroVideoCard = ({ video, onUpdate, onNavigate }: HeroVideoCardProp
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsEditDialogOpen(true);
-  };
-
-  const handleVideoUpdate = (updatedVideo: Video) => {
-    if (onUpdate) {
-      onUpdate(updatedVideo);
-    }
   };
 
   return (
@@ -71,7 +64,7 @@ export const HeroVideoCard = ({ video, onUpdate, onNavigate }: HeroVideoCardProp
         video={video}
         isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
-        onUpdate={handleVideoUpdate}
+        onUpdate={onUpdate}
       />
     </>
   );

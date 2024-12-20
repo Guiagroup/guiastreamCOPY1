@@ -3,16 +3,13 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@supabase/auth-helpers-react";
-import { UserInformation } from "@/components/dashboard/UserInformation";
 import { SubscriptionDetails } from "@/components/dashboard/SubscriptionDetails";
+import { PasswordChange } from "@/components/dashboard/PasswordChange";
 import { useNavigate } from "react-router-dom";
-import { getVideos } from "@/services/videoService";
 import { toast } from "sonner";
-import { Video } from "@/types/video";
 
 const Dashboard = () => {
   const [profile, setProfile] = useState<any>(null);
-  const [videos, setVideos] = useState<Video[]>([]);
   const session = useSession();
   const navigate = useNavigate();
 
@@ -37,19 +34,6 @@ const Dashboard = () => {
       }
 
       setProfile(data);
-      const fetchedVideos = await getVideos();
-      setVideos(fetchedVideos);
-
-      // Check if video limit is reached
-      if (videos.length >= (data.monthly_upload_limit || 10)) {
-        toast.error("Video upload limit reached", {
-          description: "Please upgrade your plan to add more videos",
-          action: {
-            label: "Upgrade",
-            onClick: () => navigate('/pricing')
-          }
-        });
-      }
     };
 
     fetchData();
@@ -64,8 +48,10 @@ const Dashboard = () => {
       <Navbar />
       <div className="flex-1 container mx-auto py-10 px-4 space-y-8 animate-fade-in pt-20">
         <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
-        <UserInformation />
-        <SubscriptionDetails profile={profile} />
+        <div className="grid gap-8 md:grid-cols-2">
+          <SubscriptionDetails profile={profile} />
+          <PasswordChange />
+        </div>
       </div>
       <Footer />
     </div>

@@ -67,6 +67,9 @@ serve(async (req) => {
       allow_promotion_codes: true,
       billing_address_collection: 'required',
       payment_method_types: ['card'],
+      subscription_data: {
+        trial_period_days: 30,
+      },
       metadata: {
         supabaseUid: user.id,
         planType: planType,
