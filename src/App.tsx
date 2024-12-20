@@ -37,12 +37,28 @@ const AppRoutes = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setIsAuthenticated(!!session);
-        setIsLoading(false);
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        
+        if (session) {
+          // Verify the user exists
+          const { data: user, error: userError } = await supabase.auth.getUser();
+          if (userError || !user) {
+            throw new Error('User session invalid');
+          }
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
       } catch (error) {
         console.error('Error checking session:', error);
+        // Clear any invalid session
+        await supabase.auth.signOut();
         setIsAuthenticated(false);
+        toast.error('Session expired', {
+          description: 'Please sign in again'
+        });
+      } finally {
         setIsLoading(false);
       }
     };
@@ -58,8 +74,22 @@ const AppRoutes = () => {
         setIsAuthenticated(false);
         navigate('/');
       } else if (event === 'SIGNED_IN' && session) {
-        setIsAuthenticated(true);
-        navigate('/home');
+        try {
+          // Verify the user exists
+          const { data: user, error: userError } = await supabase.auth.getUser();
+          if (userError || !user) {
+            throw new Error('User session invalid');
+          }
+          setIsAuthenticated(true);
+          navigate('/home');
+        } catch (error) {
+          console.error('Error verifying user:', error);
+          await supabase.auth.signOut();
+          setIsAuthenticated(false);
+          toast.error('Authentication error', {
+            description: 'Please sign in again'
+          });
+        }
       }
     });
 
@@ -106,10 +136,20 @@ const App = () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
+        
+        if (session) {
+          // Verify the user exists
+          const { data: user, error: userError } = await supabase.auth.getUser();
+          if (userError || !user) {
+            throw new Error('User session invalid');
+          }
+        }
       } catch (error: any) {
         console.error('Error initializing auth:', error);
+        // Clear any invalid session
+        await supabase.auth.signOut();
         toast.error('Authentication Error', {
-          description: 'Please try signing in again'
+          description: 'Please sign in again'
         });
       } finally {
         setInitializing(false);
