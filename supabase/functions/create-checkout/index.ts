@@ -51,9 +51,9 @@ serve(async (req) => {
     // Set price based on plan
     let priceId;
     if (planType === 'premium') {
-      priceId = 'price_1OgLPbKXXwqKZvVp4Qm4Aqk5'; // Replace with your actual Premium plan price ID
+      priceId = 'price_1QXZuLJxQ3vRyrS2p4ghyWIS'; // Premium plan price ID
     } else if (planType === 'basic') {
-      priceId = 'price_1OgLOvKXXwqKZvVp0vn3FjPx'; // Replace with your actual Basic plan price ID
+      priceId = 'price_1QXZscJxQ3vRyrS2hXc7hLpC'; // Basic plan price ID
     } else {
       throw new Error('Invalid plan type');
     }
