@@ -64,8 +64,12 @@ serve(async (req) => {
       mode: 'subscription',
       success_url: `${req.headers.get('origin')}/dashboard?success=true`,
       cancel_url: `${req.headers.get('origin')}/pricing?canceled=true`,
+      allow_promotion_codes: true,
+      billing_address_collection: 'required',
+      payment_method_types: ['card'],
       metadata: {
         supabaseUid: user.id,
+        planType: planType,
       },
     });
 
