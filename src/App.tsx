@@ -34,41 +34,27 @@ const AppRoutes = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  const clearSessionAndRedirect = async () => {
-    try {
-      localStorage.clear(); // Clear all local storage
-      await supabase.auth.signOut({ scope: 'local' }); // Only clear local session
-      setIsAuthenticated(false);
-      queryClient.clear();
-      navigate('/auth');
-    } catch (error) {
-      console.error('Error clearing session:', error);
-    }
-  };
-
   useEffect(() => {
     const checkSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
         
         if (session) {
+          // Verify the user exists
           const { data: user, error: userError } = await supabase.auth.getUser();
-          if (userError) {
-            throw userError;
-          }
-          if (!user) {
-            throw new Error('User not found');
+          if (userError || !user) {
+            throw new Error('User session invalid');
           }
           setIsAuthenticated(true);
         } else {
-          await clearSessionAndRedirect();
+          setIsAuthenticated(false);
         }
       } catch (error) {
         console.error('Error checking session:', error);
-        await clearSessionAndRedirect();
+        // Clear any invalid session
+        await supabase.auth.signOut();
+        setIsAuthenticated(false);
         toast.error('Session expired', {
           description: 'Please sign in again'
         });
@@ -78,26 +64,28 @@ const AppRoutes = () => {
     };
 
     checkSession();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
-        await clearSessionAndRedirect();
+      if (event === 'SIGNED_OUT') {
+        queryClient.clear();
+        localStorage.removeItem('lastPath');
+        setIsAuthenticated(false);
+        navigate('/');
       } else if (event === 'SIGNED_IN' && session) {
         try {
+          // Verify the user exists
           const { data: user, error: userError } = await supabase.auth.getUser();
-          if (userError) {
-            throw userError;
-          }
-          if (!user) {
-            throw new Error('User not found');
+          if (userError || !user) {
+            throw new Error('User session invalid');
           }
           setIsAuthenticated(true);
           navigate('/home');
         } catch (error) {
           console.error('Error verifying user:', error);
-          await clearSessionAndRedirect();
+          await supabase.auth.signOut();
+          setIsAuthenticated(false);
           toast.error('Authentication error', {
             description: 'Please sign in again'
           });
@@ -146,12 +134,20 @@ const App = () => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        localStorage.clear(); // Clear any potentially invalid data
-        const { error } = await supabase.auth.signOut({ scope: 'local' }); // Clear local session
+        const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
         
+        if (session) {
+          // Verify the user exists
+          const { data: user, error: userError } = await supabase.auth.getUser();
+          if (userError || !user) {
+            throw new Error('User session invalid');
+          }
+        }
       } catch (error: any) {
         console.error('Error initializing auth:', error);
+        // Clear any invalid session
+        await supabase.auth.signOut();
         toast.error('Authentication Error', {
           description: 'Please sign in again'
         });
