@@ -49,9 +49,16 @@ serve(async (req) => {
     }
 
     // Set price based on plan
-    const priceId = planType === 'premium' 
-      ? 'price_premium' // Replace with your actual Stripe price ID for premium
-      : 'price_basic';  // Replace with your actual Stripe price ID for basic
+    let priceId;
+    if (planType === 'premium') {
+      priceId = 'price_1OgLPbKXXwqKZvVp4Qm4Aqk5'; // Replace with your actual Premium plan price ID
+    } else if (planType === 'basic') {
+      priceId = 'price_1OgLOvKXXwqKZvVp0vn3FjPx'; // Replace with your actual Basic plan price ID
+    } else {
+      throw new Error('Invalid plan type');
+    }
+
+    console.log('Creating checkout session for plan:', planType, 'with price ID:', priceId);
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -75,6 +82,8 @@ serve(async (req) => {
         planType: planType,
       },
     });
+
+    console.log('Checkout session created:', session.id);
 
     return new Response(
       JSON.stringify({ url: session.url }),
