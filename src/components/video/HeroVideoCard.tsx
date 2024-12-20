@@ -8,10 +8,11 @@ import { useTranslation } from "react-i18next";
 interface HeroVideoCardProps {
   video: Video;
   onUpdate?: (video: Video) => void;
+  onDelete?: (videoId: string) => void;
   onNavigate?: () => void;
 }
 
-export const HeroVideoCard = ({ video, onUpdate, onNavigate }: HeroVideoCardProps) => {
+export const HeroVideoCard = ({ video, onUpdate, onDelete, onNavigate }: HeroVideoCardProps) => {
   const { t } = useTranslation();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
