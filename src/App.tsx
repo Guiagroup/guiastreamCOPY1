@@ -32,45 +32,57 @@ const AppRoutes = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const lastPath = localStorage.getItem('lastPath');
-    if (lastPath && lastPath !== '/') {
-      navigate(lastPath);
-    }
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error checking session:', error);
+        setIsAuthenticated(false);
+        setIsLoading(false);
+      }
+    };
 
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    checkSession();
+  }, []);
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
-
-  // Handle auth state changes
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        queryClient.clear(); // Clear query cache on logout
+        queryClient.clear();
         localStorage.removeItem('lastPath');
-        navigate('/auth');
+        setIsAuthenticated(false);
+        navigate('/');
       } else if (event === 'SIGNED_IN' && session) {
+        setIsAuthenticated(true);
         navigate('/home');
-      } else if (event === 'TOKEN_REFRESHED') {
-        // Handle successful token refresh
-        console.log('Token refreshed successfully');
-      } else if (event === 'USER_UPDATED') {
-        // Handle user data updates
-        console.log('User data updated');
       }
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   if (isLoading) {
     return <PageLoader />;
+  }
+
+  // Public routes that don't require authentication
+  const publicRoutes = ['/', '/auth', '/pricing'];
+  const isPublicRoute = publicRoutes.includes(location.pathname);
+
+  // Redirect to auth if trying to access protected route while not authenticated
+  if (!isAuthenticated && !isPublicRoute) {
+    return <Auth />;
+  }
+
+  // Redirect to home if trying to access auth while authenticated
+  if (isAuthenticated && location.pathname === '/auth') {
+    navigate('/home');
+    return null;
   }
 
   return (
@@ -94,18 +106,6 @@ const App = () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
-        
-        // Initialize Supabase auth
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-          if (session?.access_token) {
-            // Ensure the token is set in the client
-            supabase.auth.setSession(session);
-          }
-        });
-
-        return () => {
-          subscription.unsubscribe();
-        };
       } catch (error: any) {
         console.error('Error initializing auth:', error);
         toast.error('Authentication Error', {

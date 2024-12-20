@@ -1,58 +1,24 @@
 import { useState } from "react";
 import { Video } from "../../types/video";
 import { Button } from "../ui/button";
-import { Edit, Heart, Trash } from "lucide-react";
+import { Edit, Heart } from "lucide-react";
 import { VideoEditDialog } from "./VideoEditDialog";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../ui/alert-dialog";
-import { deleteVideo } from "../../services/videoService";
 
 interface HeroVideoCardProps {
   video: Video;
   onUpdate?: (video: Video) => void;
-  onDelete?: (videoId: string) => void;
   onNavigate?: () => void;
 }
 
-export const HeroVideoCard = ({ video, onUpdate, onDelete, onNavigate }: HeroVideoCardProps) => {
+export const HeroVideoCard = ({ video, onUpdate, onNavigate }: HeroVideoCardProps) => {
   const { t } = useTranslation();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsEditDialogOpen(true);
-  };
-
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowDeleteDialog(true);
-  };
-
-  const confirmDelete = async () => {
-    const success = await deleteVideo(video.id);
-    if (success) {
-      if (onDelete) {
-        onDelete(video.id);
-      }
-      toast.success("Video deleted successfully");
-      if (window.location.pathname.includes(`/video/${video.id}`)) {
-        window.location.href = '/';
-      }
-    } else {
-      toast.error("Failed to delete video");
-    }
-    setShowDeleteDialog(false);
   };
 
   const handleVideoUpdate = (updatedVideo: Video) => {
@@ -91,16 +57,6 @@ export const HeroVideoCard = ({ video, onUpdate, onDelete, onNavigate }: HeroVid
               
               <Button
                 size="sm"
-                variant="destructive"
-                className="bg-white/10 hover:bg-white/20"
-                onClick={handleDelete}
-              >
-                <Trash className="h-4 w-4 mr-2" />
-                {t('common.delete')}
-              </Button>
-              
-              <Button
-                size="sm"
                 variant="ghost"
                 className="ml-auto"
               >
@@ -117,21 +73,6 @@ export const HeroVideoCard = ({ video, onUpdate, onDelete, onNavigate }: HeroVid
         onOpenChange={setIsEditDialogOpen}
         onUpdate={handleVideoUpdate}
       />
-
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the video.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 };
