@@ -13,7 +13,7 @@ interface VideoEditDialogProps {
   video: Video;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onUpdate: (updatedVideo: Video) => void;
+  onUpdate?: (updatedVideo: Video) => void;
 }
 
 export const VideoEditDialog = ({
@@ -82,10 +82,15 @@ export const VideoEditDialog = ({
       category: newCategory.trim() || editedCategory,
     };
     
-    onUpdate(updatedVideo);
-    onOpenChange(false);
-    localStorage.removeItem('videoEditForm'); // Clear form data after successful save
-    toast.success(t('common.success'));
+    if (typeof onUpdate === 'function') {
+      onUpdate(updatedVideo);
+      onOpenChange(false);
+      localStorage.removeItem('videoEditForm'); // Clear form data after successful save
+      toast.success(t('common.success'));
+    } else {
+      toast.error(t('common.error'));
+      console.error('onUpdate prop is not a function');
+    }
   };
 
   return (
