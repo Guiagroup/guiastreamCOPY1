@@ -3,6 +3,7 @@ import { Video } from "../types/video";
 import { VideoCard } from "./VideoCard";
 import { updateVideo } from "../services/videoService";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface VideoGridProps {
   videos: Video[];
@@ -28,12 +29,15 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
         (payload) => {
           if (payload.eventType === 'INSERT') {
             setVideos(prev => [payload.new as Video, ...prev]);
+            toast.success('New video added');
           } else if (payload.eventType === 'DELETE') {
             setVideos(prev => prev.filter(video => video.id !== payload.old.id));
+            toast.success('Video removed');
           } else if (payload.eventType === 'UPDATE') {
             setVideos(prev => prev.map(video => 
               video.id === payload.new.id ? payload.new as Video : video
             ));
+            toast.success('Video updated');
           }
         }
       )
@@ -44,12 +48,15 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
     };
   }, [initialVideos]);
 
-  const handleVideoUpdate = (updatedVideo: Video) => {
-    const success = updateVideo(updatedVideo);
+  const handleVideoUpdate = async (updatedVideo: Video) => {
+    const success = await updateVideo(updatedVideo);
     if (success) {
       setVideos(videos.map(video => 
         video.id === updatedVideo.id ? updatedVideo : video
       ));
+      toast.success('Video updated successfully');
+    } else {
+      toast.error('Failed to update video');
     }
   };
 
