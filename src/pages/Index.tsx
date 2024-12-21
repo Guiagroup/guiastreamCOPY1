@@ -13,6 +13,7 @@ import { CategoryFilter } from "@/components/home/CategoryFilter";
 import { EmptyState } from "@/components/home/EmptyState";
 import { toast } from "sonner";
 import { Video } from "@/types/video";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ const Index = () => {
   const [fromSuggestion, setFromSuggestion] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [latestVideo, setLatestVideo] = useState<Video | null>(null);
@@ -31,7 +33,15 @@ const Index = () => {
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
+      setError(null);
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setError("Please sign in to view videos");
+          setIsLoading(false);
+          return;
+        }
+
         const [fetchedVideos, latest, cats] = await Promise.all([
           getVideos(),
           getLatestVideo(),
@@ -44,6 +54,7 @@ const Index = () => {
         setIsNewUser(fetchedVideos.length === 0);
       } catch (error) {
         console.error("Error loading data:", error);
+        setError(t('common.error'));
         toast.error(t('common.error'));
       } finally {
         setIsLoading(false);
@@ -52,6 +63,30 @@ const Index = () => {
     loadData();
   }, [t]);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar onShowFavorites={setShowFavorites} />
+        <main className="flex-grow flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar onShowFavorites={setShowFavorites} />
+        <main className="flex-grow flex items-center justify-center text-red-500">
+          {error}
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   const displayVideos = videos.filter(video => {
     if (latestVideo && video.id === latestVideo.id && !isNewUser) return false;
     const matchesCategory = selectedCategory === "all" || video.category === selectedCategory;
@@ -59,7 +94,6 @@ const Index = () => {
     return matchesCategory && matchesFavorites;
   });
 
-  // If there's only one video, duplicate it for both hero and grid
   const shouldDuplicateVideo = videos.length === 1;
 
   return (
