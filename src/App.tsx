@@ -41,7 +41,6 @@ const AppRoutes = () => {
         if (error) throw error;
         
         if (session) {
-          // Verify the user exists
           const { data: user, error: userError } = await supabase.auth.getUser();
           if (userError || !user) {
             throw new Error('User session invalid');
@@ -52,7 +51,6 @@ const AppRoutes = () => {
         }
       } catch (error) {
         console.error('Error checking session:', error);
-        // Clear any invalid session
         await supabase.auth.signOut();
         setIsAuthenticated(false);
         toast.error('Session expired', {
@@ -75,7 +73,6 @@ const AppRoutes = () => {
         navigate('/');
       } else if (event === 'SIGNED_IN' && session) {
         try {
-          // Verify the user exists
           const { data: user, error: userError } = await supabase.auth.getUser();
           if (userError || !user) {
             throw new Error('User session invalid');
@@ -124,6 +121,8 @@ const AppRoutes = () => {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      {/* Add a catch-all route for 404s */}
+      <Route path="*" element={<Landing />} />
     </Routes>
   );
 };
@@ -138,7 +137,6 @@ const App = () => {
         if (error) throw error;
         
         if (session) {
-          // Verify the user exists
           const { data: user, error: userError } = await supabase.auth.getUser();
           if (userError || !user) {
             throw new Error('User session invalid');
@@ -146,7 +144,6 @@ const App = () => {
         }
       } catch (error: any) {
         console.error('Error initializing auth:', error);
-        // Clear any invalid session
         await supabase.auth.signOut();
         toast.error('Authentication Error', {
           description: 'Please sign in again'
