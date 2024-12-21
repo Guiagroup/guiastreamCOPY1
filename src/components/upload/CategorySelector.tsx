@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { FormField } from "./FormField";
 import { X } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CategorySelectorProps {
   category: string;
@@ -25,10 +26,6 @@ export const CategorySelector = ({
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categories, setCategories] = useState<string[]>(['Uncategorized']);
   
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
   const loadCategories = async () => {
     const cats = await getCategories();
     if (cats.length > 0) {
@@ -38,6 +35,30 @@ export const CategorySelector = ({
       }
     }
   };
+
+  useEffect(() => {
+    loadCategories();
+
+    // Subscribe to real-time category updates
+    const channel = supabase
+      .channel('categories-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'categories'
+        },
+        () => {
+          loadCategories();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const handleAddCategory = async () => {
     if (!newCategory.trim()) {

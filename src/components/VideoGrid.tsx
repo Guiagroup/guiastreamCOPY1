@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Video } from "../types/video";
 import { VideoCard } from "./VideoCard";
 import { updateVideo } from "../services/videoService";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VideoGridProps {
   videos: Video[];
@@ -13,6 +14,34 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
 
   useEffect(() => {
     setVideos(initialVideos);
+
+    // Subscribe to real-time video updates
+    const channel = supabase
+      .channel('videos-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'videos'
+        },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setVideos(prev => [payload.new as Video, ...prev]);
+          } else if (payload.eventType === 'DELETE') {
+            setVideos(prev => prev.filter(video => video.id !== payload.old.id));
+          } else if (payload.eventType === 'UPDATE') {
+            setVideos(prev => prev.map(video => 
+              video.id === payload.new.id ? payload.new as Video : video
+            ));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [initialVideos]);
 
   const handleVideoUpdate = (updatedVideo: Video) => {
