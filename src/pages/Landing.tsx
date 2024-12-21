@@ -11,12 +11,25 @@ const Landing = () => {
   };
 
   const handleWatchDemo = () => {
-    // Demo video logic would go here
     console.log("Watch demo clicked");
   };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background Image with Gradients */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `
+            linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 30%),
+            linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 30%),
+            url('https://www.imghippo.com/i/K3879w.jpg')
+          `,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      
       <BackgroundVideoCarousel />
       
       {/* Background Icons */}
@@ -29,7 +42,7 @@ const Landing = () => {
         <Palette className="absolute top-[60%] left-[15%] w-12 h-12 animate-fade-in delay-500" />
       </div>
       
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-4 relative z-10">
         <nav className="flex items-center justify-between py-8">
           <span className="text-2xl font-bold text-primary animate-fade-in">
             GuiaStream
