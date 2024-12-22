@@ -11,13 +11,25 @@ const Landing = () => {
   };
 
   const handleWatchDemo = () => {
-    // Demo video logic would go here
     console.log("Watch demo clicked");
   };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      <BackgroundVideoCarousel />
+      {/* Background Image with Gradients */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `
+            linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 20%),
+            linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 20%),
+            url('/lovable-uploads/87332306-68a2-4861-a83d-836087449dbc.png')
+          `,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
       
       {/* Background Icons */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
@@ -29,9 +41,9 @@ const Landing = () => {
         <Palette className="absolute top-[60%] left-[15%] w-12 h-12 animate-fade-in delay-500" />
       </div>
       
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-4 relative z-10">
         <nav className="flex items-center justify-between py-8">
-          <span className="text-2xl font-bold text-primary animate-fade-in">
+          <span className="text-2xl font-bold text-white animate-fade-in">
             GuiaStream
           </span>
           <Button 
@@ -44,13 +56,13 @@ const Landing = () => {
 
         <main className="py-20">
           <div className="text-center space-y-8 relative z-10">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight animate-fade-in">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white animate-fade-in">
               Your Personal
               <span className="text-primary block animate-fade-in delay-150">
                 Streaming Notebook
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in delay-300">
+            <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto animate-fade-in delay-300">
               Organize, categorize, and keep track of your favorite streaming content all in one place. 
               Never lose track of what you want to watch next.
             </p>
@@ -65,7 +77,7 @@ const Landing = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="transform transition-all duration-300 hover:scale-105"
+                className="transform transition-all duration-300 hover:scale-105 text-white border-white hover:bg-white/10"
                 onClick={handleWatchDemo}
               >
                 Watch Demo
@@ -90,13 +102,15 @@ const Landing = () => {
             ].map((feature, index) => (
               <div 
                 key={index}
-                className="p-6 rounded-lg border bg-card/50 backdrop-blur-sm 
+                className="p-6 rounded-lg border border-white/20 bg-black/50 backdrop-blur-sm 
                           transform transition-all duration-500 hover:scale-110 
                           animate-fade-in group"
                 style={{ animationDelay: `${(index + 4) * 150}ms` }}
               >
-                <h3 className="text-xl font-semibold mb-4 group-hover:text-primary transition-colors">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="text-xl font-semibold mb-4 text-white group-hover:text-primary transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-300">{feature.description}</p>
               </div>
             ))}
           </div>
