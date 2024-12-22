@@ -56,6 +56,20 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Image with Gradient */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.4) 100%),
+            url('/lovable-uploads/87332306-68a2-4861-a83d-836087449dbc.png')
+          `,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
+
       <div className="absolute inset-0 pointer-events-none">
         <Pen className="absolute top-[15%] left-[10%] w-16 h-16 opacity-50 rotate-[-15deg] animate-fade-in" />
         <Cake className="absolute top-[25%] right-[15%] w-12 h-12 opacity-50 rotate-12 animate-fade-in delay-100" />
@@ -64,12 +78,12 @@ const Auth = () => {
         <Palette className="absolute bottom-[20%] right-[10%] w-16 h-16 opacity-50 rotate-[-20deg] animate-fade-in delay-400" />
       </div>
 
-      <Card className="w-full max-w-md mx-auto animate-fade-in relative z-10">
+      <Card className="w-full max-w-md mx-auto animate-fade-in relative z-10 bg-black/50 backdrop-blur-sm border-white/20">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="text-2xl font-bold text-center text-white">
             Welcome to GuiaStream
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-gray-300">
             {selectedPlan !== 'free' 
               ? `Continue with ${selectedPlan} plan`
               : 'Get started for free'}

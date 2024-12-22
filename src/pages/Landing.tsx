@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { BackgroundVideoCarousel } from "@/components/landing/BackgroundVideoCarousel";
 import { Pen, Cake, Film, Mic, Palette, Music } from "lucide-react";
 
 const Landing = () => {
@@ -21,8 +20,7 @@ const Landing = () => {
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: `
-            linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 20%),
-            linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 20%),
+            linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.4) 100%),
             url('/lovable-uploads/87332306-68a2-4861-a83d-836087449dbc.png')
           `,
           backgroundSize: 'cover',
