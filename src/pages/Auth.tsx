@@ -61,7 +61,7 @@ const Auth = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: `
-            linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.4) 100%),
+            linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.65) 100%),
             url('/lovable-uploads/87332306-68a2-4861-a83d-836087449dbc.png')
           `,
           backgroundSize: 'cover',
