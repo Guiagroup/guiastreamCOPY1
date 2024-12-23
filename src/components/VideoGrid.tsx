@@ -1,20 +1,13 @@
 import { useState, useEffect } from "react";
 import { Video } from "../types/video";
-import { VideoCard } from "./VideoCard";
 import { updateVideo } from "../services/videoService";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { EmptyState } from "./home/EmptyState";
-import { Loader2, Grid2x2, LayoutGrid, Grid } from "lucide-react";
-import { Button } from "./ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "./ui/pagination";
+import { Loader2 } from "lucide-react";
+import { GridLayoutControls } from "./video/GridLayoutControls";
+import { VideoPagination } from "./video/VideoPagination";
+import { VideoGridLayout } from "./video/VideoGridLayout";
 
 interface VideoGridProps {
   videos: Video[];
@@ -40,12 +33,6 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentVideos = videos.slice(startIndex, endIndex);
-
-  const gridColumns = {
-    '2x2': 'grid-cols-1 sm:grid-cols-2',
-    '3x2': 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
-    '4x2': 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
-  }[gridLayout];
 
   useEffect(() => {
     setVideos(initialVideos);
@@ -132,79 +119,24 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end gap-2">
-        <Button
-          variant={gridLayout === '2x2' ? 'default' : 'outline'}
-          size="icon"
-          onClick={() => setGridLayout('2x2')}
-        >
-          <Grid2x2 className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={gridLayout === '3x2' ? 'default' : 'outline'}
-          size="icon"
-          onClick={() => setGridLayout('3x2')}
-        >
-          <LayoutGrid className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={gridLayout === '4x2' ? 'default' : 'outline'}
-          size="icon"
-          onClick={() => setGridLayout('4x2')}
-        >
-          <Grid className="h-4 w-4" />
-        </Button>
-      </div>
+      <GridLayoutControls 
+        gridLayout={gridLayout} 
+        setGridLayout={setGridLayout} 
+      />
+      
+      <VideoGridLayout
+        videos={currentVideos}
+        gridLayout={gridLayout}
+        highlightedVideoId={highlightedVideoId}
+        onUpdate={handleVideoUpdate}
+        onDelete={handleVideoDelete}
+      />
 
-      <div className={`grid ${gridColumns} gap-6`}>
-        {currentVideos.map((video) => (
-          <div
-            key={video.id}
-            className={`transition-all duration-300 ${
-              highlightedVideoId === video.id
-                ? "ring-2 ring-primary ring-offset-2 rounded-lg transform scale-105"
-                : ""
-            }`}
-          >
-            <VideoCard 
-              video={video} 
-              onUpdate={handleVideoUpdate}
-              onDelete={handleVideoDelete}
-            />
-          </div>
-        ))}
-      </div>
-
-      {totalPages > 1 && (
-        <Pagination className="mt-8">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-              />
-            </PaginationItem>
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => setCurrentPage(page)}
-                  isActive={currentPage === page}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            
-            <PaginationItem>
-              <PaginationNext 
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
+      <VideoPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };

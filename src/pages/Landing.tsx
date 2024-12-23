@@ -82,36 +82,6 @@ const Landing = () => {
               </Button>
             </div>
           </div>
-
-          <div className="mt-20 grid md:grid-cols-3 gap-8 text-center">
-            {[
-              {
-                title: "Organize Content",
-                description: "Keep all your streaming content organized in one place with custom categories and tags."
-              },
-              {
-                title: "Track Progress",
-                description: "Never lose track of where you left off in your favorite shows and movies."
-              },
-              {
-                title: "Share & Discover",
-                description: "Share your collections with friends and discover new content to watch."
-              }
-            ].map((feature, index) => (
-              <div 
-                key={index}
-                className="p-6 rounded-lg border border-white/20 bg-black/50 backdrop-blur-sm 
-                          transform transition-all duration-500 hover:scale-110 
-                          animate-fade-in group"
-                style={{ animationDelay: `${(index + 4) * 150}ms` }}
-              >
-                <h3 className="text-xl font-semibold mb-4 text-white group-hover:text-primary transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-300">{feature.description}</p>
-              </div>
-            ))}
-          </div>
         </main>
       </div>
     </div>
