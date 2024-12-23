@@ -5,7 +5,7 @@ import { updateVideo } from "../services/videoService";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { EmptyState } from "./home/EmptyState";
-import { Loader2, Grid2x2, Grid3x2, Grid4x2 } from "lucide-react";
+import { Loader2, Grid2x2, LayoutGrid, Grid } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Pagination,
@@ -145,14 +145,14 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
           size="icon"
           onClick={() => setGridLayout('3x2')}
         >
-          <Grid3x2 className="h-4 w-4" />
+          <LayoutGrid className="h-4 w-4" />
         </Button>
         <Button
           variant={gridLayout === '4x2' ? 'default' : 'outline'}
           size="icon"
           onClick={() => setGridLayout('4x2')}
         >
-          <Grid4x2 className="h-4 w-4" />
+          <Grid className="h-4 w-4" />
         </Button>
       </div>
 
