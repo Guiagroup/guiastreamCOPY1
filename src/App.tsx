@@ -32,8 +32,6 @@ const App = () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
         
-        setIsAuthenticated(!!session);
-        
         if (session) {
           const { data: user, error: userError } = await supabase.auth.getUser();
           if (userError || !user) {
@@ -42,23 +40,13 @@ const App = () => {
         }
       } catch (error: any) {
         console.error('Error initializing auth:', error);
-        setIsAuthenticated(false);
         await supabase.auth.signOut();
       } finally {
         setInitializing(false);
       }
     };
 
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
-
     initializeAuth();
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
   if (initializing) {
