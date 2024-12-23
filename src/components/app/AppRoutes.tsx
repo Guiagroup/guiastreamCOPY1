@@ -1,4 +1,4 @@
-import { useLocation, Routes, Route, useNavigate } from "react-router-dom";
+import { useLocation, Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import VideoPlayer from "@/pages/VideoPlayer";
 import Upload from "@/pages/Upload";
@@ -13,21 +13,24 @@ interface AppRoutesProps {
 
 export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   // Public routes that don't require authentication
   const publicRoutes = ['/', '/auth', '/pricing'];
   const isPublicRoute = publicRoutes.includes(location.pathname);
 
+  // If authentication is still being determined, don't render anything
+  if (isAuthenticated === null) {
+    return null;
+  }
+
   // Redirect to auth if trying to access protected route while not authenticated
   if (!isAuthenticated && !isPublicRoute) {
-    return <Auth />;
+    return <Navigate to="/auth" replace />;
   }
 
   // Redirect to home if trying to access auth while authenticated
   if (isAuthenticated && location.pathname === '/auth') {
-    navigate('/home');
-    return null;
+    return <Navigate to="/home" replace />;
   }
 
   return (
@@ -39,8 +42,8 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      {/* Add a catch-all route for 404s */}
-      <Route path="*" element={<Landing />} />
+      {/* Redirect all unknown routes to landing page */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

@@ -1,7 +1,6 @@
 import { Video } from "../../types/video";
-import { Play, Edit2, Heart, Trash } from "lucide-react";
+import { Play, Heart, Trash } from "lucide-react";
 import { useState } from "react";
-import { VideoEditDialog } from "./VideoEditDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +16,7 @@ import { deleteVideo } from "../../services/videoService";
 
 interface RegularVideoCardProps {
   video: Video;
-  onUpdate?: (updatedVideo: Video) => void;
+  onUpdate?: (video: Video) => void;
   onDelete?: (videoId: string) => void;
   onNavigate: () => void;
 }
@@ -28,17 +27,11 @@ export const RegularVideoCard = ({
   onDelete,
   onNavigate 
 }: RegularVideoCardProps) => {
-  const [isEditing, setIsEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const getYouTubeThumbnail = (url: string) => {
     const videoId = url.split('v=')[1]?.split('&')[0];
     return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
-  };
-
-  const handleEdit = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditing(true);
   };
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -104,12 +97,6 @@ export const RegularVideoCard = ({
               <Trash className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </button>
             <button
-              onClick={handleEdit}
-              className="p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <Edit2 className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-            </button>
-            <button
               onClick={handleFavoriteClick}
               className="p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
             >
@@ -122,15 +109,6 @@ export const RegularVideoCard = ({
           </div>
         </div>
       </div>
-
-      {onUpdate && (
-        <VideoEditDialog
-          video={video}
-          isOpen={isEditing}
-          onOpenChange={setIsEditing}
-          onUpdate={onUpdate}
-        />
-      )}
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>

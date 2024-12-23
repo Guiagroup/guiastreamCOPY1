@@ -5,17 +5,47 @@ import { updateVideo } from "../services/videoService";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { EmptyState } from "./home/EmptyState";
-import { Loader2 } from "lucide-react";
+import { Loader2, Grid2x2, Grid3x2, Grid4x2 } from "lucide-react";
+import { Button } from "./ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
 
 interface VideoGridProps {
   videos: Video[];
   highlightedVideoId?: string | null;
 }
 
+type GridLayout = '2x2' | '3x2' | '4x2';
+
 export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGridProps) => {
   const [videos, setVideos] = useState<Video[]>(initialVideos);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [gridLayout, setGridLayout] = useState<GridLayout>('3x2');
+
+  const itemsPerPage = {
+    '2x2': 4,
+    '3x2': 6,
+    '4x2': 8
+  }[gridLayout];
+
+  const totalPages = Math.ceil(videos.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentVideos = videos.slice(startIndex, endIndex);
+
+  const gridColumns = {
+    '2x2': 'grid-cols-1 sm:grid-cols-2',
+    '3x2': 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+    '4x2': 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+  }[gridLayout];
 
   useEffect(() => {
     setVideos(initialVideos);
@@ -23,7 +53,6 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
   }, [initialVideos]);
 
   useEffect(() => {
-    // Subscribe to real-time video updates
     const channel = supabase
       .channel('videos-changes')
       .on(
@@ -102,23 +131,80 @@ export const VideoGrid = ({ videos: initialVideos, highlightedVideoId }: VideoGr
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      {videos.map((video) => (
-        <div
-          key={video.id}
-          className={`transition-all duration-300 ${
-            highlightedVideoId === video.id
-              ? "ring-2 ring-primary ring-offset-2 rounded-lg transform scale-105"
-              : ""
-          }`}
+    <div className="space-y-6">
+      <div className="flex justify-end gap-2">
+        <Button
+          variant={gridLayout === '2x2' ? 'default' : 'outline'}
+          size="icon"
+          onClick={() => setGridLayout('2x2')}
         >
-          <VideoCard 
-            video={video} 
-            onUpdate={handleVideoUpdate}
-            onDelete={handleVideoDelete}
-          />
-        </div>
-      ))}
+          <Grid2x2 className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={gridLayout === '3x2' ? 'default' : 'outline'}
+          size="icon"
+          onClick={() => setGridLayout('3x2')}
+        >
+          <Grid3x2 className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={gridLayout === '4x2' ? 'default' : 'outline'}
+          size="icon"
+          onClick={() => setGridLayout('4x2')}
+        >
+          <Grid4x2 className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className={`grid ${gridColumns} gap-6`}>
+        {currentVideos.map((video) => (
+          <div
+            key={video.id}
+            className={`transition-all duration-300 ${
+              highlightedVideoId === video.id
+                ? "ring-2 ring-primary ring-offset-2 rounded-lg transform scale-105"
+                : ""
+            }`}
+          >
+            <VideoCard 
+              video={video} 
+              onUpdate={handleVideoUpdate}
+              onDelete={handleVideoDelete}
+            />
+          </div>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <Pagination className="mt-8">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+              />
+            </PaginationItem>
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(page)}
+                  isActive={currentPage === page}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };
