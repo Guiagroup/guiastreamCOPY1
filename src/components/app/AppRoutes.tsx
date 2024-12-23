@@ -6,6 +6,7 @@ import Landing from "@/pages/Landing";
 import Pricing from "@/pages/Pricing";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
+import NotFound from "@/pages/NotFound";
 
 interface AppRoutesProps {
   isAuthenticated: boolean | null;
@@ -42,8 +43,7 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      {/* Redirect all unknown routes to landing page */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

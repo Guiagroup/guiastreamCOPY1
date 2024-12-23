@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Pen, Cake, Film, Mic, Palette, Music } from "lucide-react";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -28,16 +27,6 @@ const Landing = () => {
           backgroundRepeat: 'no-repeat'
         }}
       />
-      
-      {/* Background Icons */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <Pen className="absolute top-[15%] left-[10%] w-16 h-16 animate-fade-in" />
-        <Cake className="absolute top-[25%] right-[15%] w-12 h-12 animate-fade-in delay-100" />
-        <Film className="absolute bottom-[30%] left-[20%] w-20 h-20 animate-fade-in delay-200" />
-        <Music className="absolute top-[45%] right-[25%] w-14 h-14 animate-fade-in delay-300" />
-        <Mic className="absolute bottom-[20%] right-[10%] w-16 h-16 animate-fade-in delay-400" />
-        <Palette className="absolute top-[60%] left-[15%] w-12 h-12 animate-fade-in delay-500" />
-      </div>
       
       <div className="container mx-auto px-4 relative z-10">
         <nav className="flex items-center justify-between py-8">
