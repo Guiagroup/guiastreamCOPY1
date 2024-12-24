@@ -24,6 +24,28 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
   const [category, setCategory] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      if (!session) {
+        navigate('/auth');
+      }
+    };
+    
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+      if (!session) {
+        navigate('/auth');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   // Load form data from localStorage if available
   useEffect(() => {
@@ -68,6 +90,12 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!isAuthenticated) {
+      toast.error("Please sign in to upload videos");
+      navigate('/auth');
+      return;
+    }
+
     if (!title.trim() || !videoUrl.trim() || (!category && !newCategory)) {
       toast.error(t("upload.requiredFields"));
       return;
@@ -80,59 +108,59 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
       return;
     }
 
-    // Check user's plan and video count
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('plan_type, uploads_used, monthly_upload_limit')
-      .single();
-
-    if (!profile) {
-      toast.error("Unable to verify user plan");
-      return;
-    }
-
-    if (profile.uploads_used >= profile.monthly_upload_limit) {
-      if (profile.plan_type === 'free') {
-        toast.error("Free plan limit reached", {
-          description: "Please upgrade to add more videos",
-          action: {
-            label: "Upgrade",
-            onClick: () => navigate('/pricing')
-          }
-        });
-      } else if (profile.plan_type === 'basic') {
-        toast.error("Basic plan limit reached", {
-          description: "Please upgrade to premium for unlimited videos",
-          action: {
-            label: "Upgrade",
-            onClick: () => navigate('/pricing')
-          }
-        });
-      }
-      return;
-    }
-
     setIsSubmitting(true);
 
-    const finalCategory = newCategory || category;
-    const thumbnailUrl = getYouTubeThumbnail(videoUrl.trim());
-
-    const newVideo = {
-      title: title.trim(),
-      description: description.trim(),
-      video_url: videoUrl.trim(),
-      thumbnail_url: thumbnailUrl,
-      category: finalCategory,
-      is_favorite: false,
-      upload_date: new Date().toISOString(),
-      last_played_position: 0
-    };
-
     try {
+      // Check user's plan and video count
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan_type, uploads_used, monthly_upload_limit')
+        .single();
+
+      if (!profile) {
+        toast.error("Unable to verify user plan");
+        return;
+      }
+
+      if (profile.uploads_used >= profile.monthly_upload_limit) {
+        if (profile.plan_type === 'free') {
+          toast.error("Free plan limit reached", {
+            description: "Please upgrade to add more videos",
+            action: {
+              label: "Upgrade",
+              onClick: () => navigate('/pricing')
+            }
+          });
+        } else if (profile.plan_type === 'basic') {
+          toast.error("Basic plan limit reached", {
+            description: "Please upgrade to premium for unlimited videos",
+            action: {
+              label: "Upgrade",
+              onClick: () => navigate('/pricing')
+            }
+          });
+        }
+        return;
+      }
+
+      const finalCategory = newCategory || category;
+      const thumbnailUrl = getYouTubeThumbnail(videoUrl.trim());
+
+      const newVideo = {
+        title: title.trim(),
+        description: description.trim(),
+        video_url: videoUrl.trim(),
+        thumbnail_url: thumbnailUrl,
+        category: finalCategory,
+        is_favorite: false,
+        upload_date: new Date().toISOString(),
+        last_played_position: 0
+      };
+
       const success = await addVideo(newVideo);
       if (success) {
         toast.success(t("upload.successMessage"));
-        localStorage.removeItem('uploadForm'); // Clear form data after successful upload
+        localStorage.removeItem('uploadForm');
         onUploadSuccess?.();
         navigate('/home');
       } else {
@@ -193,7 +221,7 @@ export const UploadForm = ({ onUploadSuccess }: UploadFormProps) => {
       />
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? t("upload.uploading") : "Add"}
+        {isSubmitting ? t("upload.uploading") : t("upload.add")}
       </Button>
     </form>
   );

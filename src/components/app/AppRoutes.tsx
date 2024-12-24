@@ -26,7 +26,7 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
 
   // Redirect to auth if trying to access protected route while not authenticated
   if (!isAuthenticated && !isPublicRoute) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
   // Redirect to home if trying to access auth while authenticated
