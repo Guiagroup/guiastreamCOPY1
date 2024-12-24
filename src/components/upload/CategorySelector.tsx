@@ -25,21 +25,26 @@ export const CategorySelector = ({
   const { t } = useTranslation();
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categories, setCategories] = useState<string[]>(['Uncategorized']);
+  const [isLoading, setIsLoading] = useState(false);
   
   const loadCategories = async () => {
-    const cats = await getCategories();
-    if (cats.length > 0) {
-      setCategories(cats);
-      if (!cats.includes(category)) {
-        setCategory(cats[0]);
+    try {
+      const cats = await getCategories();
+      if (cats.length > 0) {
+        setCategories(cats);
+        if (!cats.includes(category)) {
+          setCategory(cats[0]);
+        }
       }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      toast.error(t("categories.loadError"));
     }
   };
 
   useEffect(() => {
     loadCategories();
 
-    // Subscribe to real-time category updates
     const channel = supabase
       .channel('categories-changes')
       .on(
@@ -66,13 +71,21 @@ export const CategorySelector = ({
       return;
     }
 
-    const success = await addCategory(newCategory.trim());
-    if (success) {
-      await loadCategories();
-      setCategory(newCategory.trim());
-      setNewCategory("");
-      setShowNewCategory(false);
-      toast.success(t("categories.added"));
+    setIsLoading(true);
+    try {
+      const success = await addCategory(newCategory.trim());
+      if (success) {
+        await loadCategories();
+        setCategory(newCategory.trim());
+        setNewCategory("");
+        setShowNewCategory(false);
+        toast.success(t("categories.added"));
+      }
+    } catch (error) {
+      console.error('Error adding category:', error);
+      toast.error(t("categories.addError"));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,13 +98,18 @@ export const CategorySelector = ({
       return;
     }
 
-    const success = await deleteCategory(categoryToDelete);
-    if (success) {
-      if (category === categoryToDelete) {
-        setCategory("Uncategorized");
+    try {
+      const success = await deleteCategory(categoryToDelete);
+      if (success) {
+        if (category === categoryToDelete) {
+          setCategory("Uncategorized");
+        }
+        await loadCategories();
+        toast.success(t("categories.deleted"));
       }
-      await loadCategories();
-      toast.success(t("categories.deleted"));
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      toast.error(t("categories.deleteError"));
     }
   };
 
@@ -147,9 +165,10 @@ export const CategorySelector = ({
               type="button"
               variant="default"
               onClick={handleAddCategory}
+              disabled={isLoading}
               className="whitespace-nowrap"
             >
-              {t("upload.add")}
+              {isLoading ? t("common.loading") : t("upload.add")}
             </Button>
             <Button
               type="button"
@@ -158,6 +177,7 @@ export const CategorySelector = ({
                 setShowNewCategory(false);
                 setNewCategory("");
               }}
+              disabled={isLoading}
               className="whitespace-nowrap"
             >
               {t("upload.cancel")}

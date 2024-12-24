@@ -37,31 +37,6 @@ export const useUploadForm = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // Load form data from localStorage
-  useEffect(() => {
-    const savedForm = localStorage.getItem('uploadForm');
-    if (savedForm) {
-      const parsedForm = JSON.parse(savedForm);
-      setTitle(parsedForm.title || "");
-      setDescription(parsedForm.description || "");
-      setVideoUrl(parsedForm.videoUrl || "");
-      setCategory(parsedForm.category || "Uncategorized");
-      setNewCategory(parsedForm.newCategory || "");
-    }
-  }, []);
-
-  // Save form data to localStorage when it changes
-  useEffect(() => {
-    const formData = {
-      title,
-      description,
-      videoUrl,
-      category,
-      newCategory,
-    };
-    localStorage.setItem('uploadForm', JSON.stringify(formData));
-  }, [title, description, videoUrl, category, newCategory]);
-
   const validateYouTubeUrl = (url: string) => {
     const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
     return pattern.test(url);
@@ -81,20 +56,18 @@ export const useUploadForm = () => {
     e.preventDefault();
     
     if (!isAuthenticated) {
-      toast.error("Please sign in to upload videos");
+      toast.error(t("auth.signInRequired"));
       navigate('/auth');
       return;
     }
 
-    if (!title.trim() || !videoUrl.trim() || (!category && !newCategory)) {
+    if (!title.trim() || !videoUrl.trim()) {
       toast.error(t("upload.requiredFields"));
       return;
     }
 
     if (!validateYouTubeUrl(videoUrl)) {
-      toast.error("Invalid URL", {
-        description: "Please enter a valid YouTube URL"
-      });
+      toast.error(t("upload.invalidUrl"));
       return;
     }
 
@@ -107,32 +80,34 @@ export const useUploadForm = () => {
         .single();
 
       if (!profile) {
-        toast.error("Unable to verify user plan");
+        toast.error(t("upload.profileError"));
+        setIsSubmitting(false);
         return;
       }
 
       if (profile.uploads_used >= profile.monthly_upload_limit) {
         if (profile.plan_type === 'free') {
-          toast.error("Free plan limit reached", {
-            description: "Please upgrade to add more videos",
+          toast.error(t("upload.freeLimitReached"), {
+            description: t("upload.upgradeToAddMore"),
             action: {
-              label: "Upgrade",
+              label: t("common.upgrade"),
               onClick: () => navigate('/pricing')
             }
           });
         } else if (profile.plan_type === 'basic') {
-          toast.error("Basic plan limit reached", {
-            description: "Please upgrade to premium for unlimited videos",
+          toast.error(t("upload.basicLimitReached"), {
+            description: t("upload.upgradeToPremium"),
             action: {
-              label: "Upgrade",
+              label: t("common.upgrade"),
               onClick: () => navigate('/pricing')
             }
           });
         }
+        setIsSubmitting(false);
         return;
       }
 
-      const finalCategory = newCategory || category;
+      const finalCategory = category || "Uncategorized";
       const thumbnailUrl = getYouTubeThumbnail(videoUrl.trim());
 
       const newVideo = {
@@ -147,12 +122,13 @@ export const useUploadForm = () => {
       };
 
       const success = await addVideo(newVideo);
+      
       if (success) {
         toast.success(t("upload.successMessage"));
         localStorage.removeItem('uploadForm');
         navigate('/home');
       } else {
-        toast.error(t("upload.errorMessage"));
+        throw new Error(t("upload.errorMessage"));
       }
     } catch (error) {
       console.error('Upload error:', error);
