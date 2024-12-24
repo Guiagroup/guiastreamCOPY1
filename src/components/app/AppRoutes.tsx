@@ -19,7 +19,7 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   const publicRoutes = ['/', '/auth', '/pricing'];
   const isPublicRoute = publicRoutes.includes(location.pathname);
 
-  // If authentication is still being determined, don't render anything
+  // If authentication is still being determined, show loading or return null
   if (isAuthenticated === null) {
     return null;
   }
@@ -42,12 +42,12 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route path="/home" element={<Index />} />
-      <Route path="/video/:id" element={<VideoPlayer />} />
-      <Route path="/upload" element={<Upload />} />
+      <Route path="/home" element={isAuthenticated ? <Index /> : <Navigate to="/auth" />} />
+      <Route path="/video/:id" element={isAuthenticated ? <VideoPlayer /> : <Navigate to="/auth" />} />
+      <Route path="/upload" element={isAuthenticated ? <Upload /> : <Navigate to="/auth" />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/auth" element={<Auth />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/auth" />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
