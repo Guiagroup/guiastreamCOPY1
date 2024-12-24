@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCategories, deleteCategory, addCategory } from "@/services/categoryService";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { FormField } from "./FormField";
 import { X } from "lucide-react";
@@ -27,7 +27,7 @@ export const CategorySelector = ({
   const [categories, setCategories] = useState<string[]>(['Uncategorized']);
   const [isLoading, setIsLoading] = useState(false);
   
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     try {
       const cats = await getCategories();
       if (cats.length > 0) {
@@ -40,11 +40,12 @@ export const CategorySelector = ({
       console.error('Error loading categories:', error);
       toast.error(t("categories.loadError"));
     }
-  };
+  }, [category, setCategory, t]);
 
   useEffect(() => {
     loadCategories();
 
+    // Subscribe to category changes
     const channel = supabase
       .channel('categories-changes')
       .on(
@@ -61,9 +62,9 @@ export const CategorySelector = ({
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      channel.unsubscribe();
     };
-  }, []);
+  }, [loadCategories]);
 
   const handleAddCategory = async () => {
     if (!newCategory.trim()) {

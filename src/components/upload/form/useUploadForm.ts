@@ -17,24 +17,33 @@ export const useUploadForm = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
+    let mounted = true;
+
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-      if (!session) {
-        navigate('/auth');
+      if (mounted) {
+        setIsAuthenticated(!!session);
+        if (!session) {
+          navigate('/auth');
+        }
       }
     };
     
     checkAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-      if (!session) {
-        navigate('/auth');
+      if (mounted) {
+        setIsAuthenticated(!!session);
+        if (!session) {
+          navigate('/auth');
+        }
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const validateYouTubeUrl = (url: string) => {
@@ -50,6 +59,15 @@ export const useUploadForm = () => {
       videoId = url.split('youtu.be/')[1]?.split('?')[0];
     }
     return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setVideoUrl("");
+    setCategory("Uncategorized");
+    setNewCategory("");
+    setIsSubmitting(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -125,7 +143,7 @@ export const useUploadForm = () => {
       
       if (success) {
         toast.success(t("upload.successMessage"));
-        localStorage.removeItem('uploadForm');
+        resetForm();
         navigate('/home');
       } else {
         throw new Error(t("upload.errorMessage"));
