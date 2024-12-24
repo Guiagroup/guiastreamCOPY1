@@ -32,6 +32,8 @@ const App = () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
         
+        setIsAuthenticated(!!session);
+        
         if (session) {
           const { data: user, error: userError } = await supabase.auth.getUser();
           if (userError || !user) {
@@ -41,6 +43,7 @@ const App = () => {
       } catch (error: any) {
         console.error('Error initializing auth:', error);
         await supabase.auth.signOut();
+        setIsAuthenticated(false);
       } finally {
         setInitializing(false);
       }

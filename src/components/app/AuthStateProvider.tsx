@@ -19,14 +19,13 @@ export const AuthStateProvider = ({ children, onAuthStateChange }: AuthStateProv
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
         
+        onAuthStateChange(!!session);
+        
         if (session) {
           const { data: user, error: userError } = await supabase.auth.getUser();
           if (userError || !user) {
             throw new Error('User session invalid');
           }
-          onAuthStateChange(true);
-        } else {
-          onAuthStateChange(false);
         }
       } catch (error) {
         console.error('Error checking session:', error);
@@ -41,12 +40,9 @@ export const AuthStateProvider = ({ children, onAuthStateChange }: AuthStateProv
     };
 
     checkSession();
-  }, [onAuthStateChange]);
 
-  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        localStorage.removeItem('lastPath');
         onAuthStateChange(false);
         navigate('/');
       } else if (event === 'SIGNED_IN' && session) {
@@ -68,7 +64,9 @@ export const AuthStateProvider = ({ children, onAuthStateChange }: AuthStateProv
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate, onAuthStateChange]);
 
   if (isLoading) {

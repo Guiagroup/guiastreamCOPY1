@@ -34,6 +34,11 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
     return <Navigate to="/home" replace />;
   }
 
+  // Redirect authenticated users from root to home
+  if (isAuthenticated && location.pathname === '/') {
+    return <Navigate to="/home" replace />;
+  }
+
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
