@@ -41,7 +41,12 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
 
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/" element={<Landing />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/pricing" element={<Pricing />} />
+
+      {/* Protected routes */}
       <Route path="/home" element={
         isAuthenticated ? <Index /> : <Navigate to="/auth" state={{ from: location }} replace />
       } />
@@ -51,12 +56,14 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route path="/upload" element={
         isAuthenticated ? <Upload /> : <Navigate to="/auth" state={{ from: location }} replace />
       } />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={
         isAuthenticated ? <Dashboard /> : <Navigate to="/auth" state={{ from: location }} replace />
       } />
-      <Route path="*" element={<Navigate to="/" replace />} />
+
+      {/* Catch all route - redirect to home or landing based on auth state */}
+      <Route path="*" element={
+        isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/" replace />
+      } />
     </Routes>
   );
 };
